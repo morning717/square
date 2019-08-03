@@ -1,10 +1,13 @@
 import React from 'react';
 import './subfaceStyle.less'
+import {isNumber} from "util";
+import {type} from "os";
 
 class Subface extends React.Component<any,any>{
     constructor(props: any) {
         super(props);
-        this.createMap = this.createMap.bind(this)
+        this.createMap = this.createMap.bind(this);
+        this.sortList  = this.sortList.bind(this);
     }
 
     componentDidMount() {
@@ -51,10 +54,65 @@ class Subface extends React.Component<any,any>{
         return(
             <div>
                 {this.createMap()}
+                {this.sortList("0.1G",'100M','0.001111T')}
             </div>
         )
     }
 
+    sortList(r1:string,r2:string,r3:string) {
+        let param: any = [this.format(r1), this.format(r2), this.format(r3)];
+        let dict: any = {};
+        let allKeys: any = [];
+        param.map((item: any, index: number) => {
+            dict[item[0][0]] = item[0][1];
+            allKeys.push(
+                item[0][0]
+            )
+        })
+
+        let s: any;
+        for (let i: number = 0; i < allKeys.length; i++) {
+            for (let j: number = 0; j < allKeys.length; j++) {
+                if (allKeys[j] > allKeys[j + 1]) {
+                    s = allKeys[j];
+                    allKeys[j] = allKeys[j + 1];
+                    allKeys[j + 1] = s;
+                }
+            }
+        }
+        this.getInput(allKeys, param);
+    }
+
+    getInput(sortL:any,r:any){
+        let rs : any = [];
+        sortL.map((d:any,index:number)=>{
+            r.map((rd:any,rindex:number)=>{
+                if (d == r[rindex][0][0]){
+                    rs.push(
+                        r[rindex][0][1]
+                    )
+                }
+            })
+        })
+
+        console.log(Array.from(new Set(rs)));
+        console.log('验证 == ' + sortL);
+    }
+
+    format(r:string){
+        let rs:any = [];
+        let unit:string = r.substr(r.length-1,1);
+        let num:number  = parseFloat(r.replace(/[^0-9 .]/ig,""));
+        if (unit == "G"){
+            num = num * 1000;
+        }else if(unit == "T"){
+            num = num * 1000 * 1000
+        }
+        rs.push(
+            [num,r]
+        )
+        return rs;
+    }
 }
 
 
