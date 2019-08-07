@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40b44f0a-492a-4e8a-beda-c25991f5a9ab" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/component/graphicalModels.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/component/squareType.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/component/subfaceV2.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/component/subface.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/subface.tsx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,7 +19,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1OrLaTgACUanjADZw7GRz4YDhzB" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -59,6 +65,7 @@
       <updated>1564730831257</updated>
       <workItem from="1564730832354" duration="3854000" />
       <workItem from="1564820621510" duration="6965000" />
+      <workItem from="1565146502698" duration="14223000" />
     </task>
     <servers />
   </component>
