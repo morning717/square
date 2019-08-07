@@ -1,7 +1,8 @@
+
 const createSquare  = () => {
     let r = ramdomSquare()
     return {
-        square:r[0],
+        square :r[0],
         top:0,
         left:6,
         type:r[1],
