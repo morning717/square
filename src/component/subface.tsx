@@ -25,7 +25,6 @@ class Subface extends React.Component<any,any> {
 
 
     componentDidMount() {
-
         window.addEventListener('keydown', (e)=> {
             if (e.key == 'ArrowLeft'){
                 this.move('left');
@@ -33,23 +32,60 @@ class Subface extends React.Component<any,any> {
                 this.move('right');
             }else if (e.key == 'ArrowDown'){
                 this.autoSquareFalling()
-            }else if (e.key == ' '){
-                this.move(' ');
+            }else if (e.key == 'ArrowUp'){
+                this.changeSquare();
             }
         });
+        this.start();
+    }
 
+    changeSquare(){
+        // 1清空画布 -> 2处理旋转 -> 3initNewSquare
+        /*1*/
+        let newGraphicalModel = new GraphicalModels();
+        this.state.graphicalModel.subface = newGraphicalModel.subface;
+        /*2*/
+        // 判断周围有足够(3*3)空间进行互换 I型足够(4*4)空间
+        let squareItem = this.state.squareItem;
+        if (squareItem.type == "I"){
+            let trI:any = [];
+            for (let i = 0 ; i < squareItem.square[0].length; i++){
+                trI[i] = [];
+            }
+            for (let i = 0 ; i < squareItem.square.length; i++){
+                for (let j = 0 ; j < squareItem.square[0].length; j++){
+                    trI[j][i] = squareItem.square[i][j];
+                }
+            }
+            this.state.squareItem.square = trI;
+        }else if (squareItem.type == "O"){
+
+        }else if (squareItem.type == "Z" || squareItem.type == "UZ"){
+            let tr:any = [];
+            for (let i = 0 ; i < squareItem.square[0].length; i++){
+                tr[i] = [];
+            }
+            for (let i = 0 ; i < squareItem.square.length; i++){
+                for (let j = 0 ; j < squareItem.square[0].length; j++){
+                    tr[j][i] = squareItem.square[i][j];
+                }
+            }
+            this.state.squareItem.square = tr;
+        }else if (squareItem.type == "L" || squareItem.type == "UL"){
+
+        }else {
+
+        }
+        /*3*/
+        this.initOneSquare()
+    }
+
+    start(){
         //初始化一个方块
         this.initOneSquare();
         //启动下落
         this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
-
     }
-
-    changeSquare(){
-        // 判断周围有足够(3*3)空间进行互换 I型足够(4*4)空间
-    }
-
-
 
     autoSquareFalling (){
         this.state.graphicalModel.subface = new GraphicalModels().subface;
@@ -111,7 +147,7 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
     }
 
 
