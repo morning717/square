@@ -1,6 +1,6 @@
 
 class GraphicalModels {
-    subface: any[] = map(20,15);
+    subface: any[] = map(15,15);
 }
 
 function map(r: number, c: number) {

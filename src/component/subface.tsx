@@ -12,6 +12,7 @@ class Subface extends React.Component<any,any> {
         this.createSubfaceMap   = this.createSubfaceMap.bind(this);
         this.createGraphicalMap = this.createGraphicalMap.bind(this);
         this.initOneSquare      = this.initOneSquare.bind(this);
+        this.resetAndNewSquare  = this.resetAndNewSquare.bind(this);
         this.move               = this.move.bind(this);
         this.state = {
             graphicalModel : new GraphicalModels(),
@@ -21,6 +22,8 @@ class Subface extends React.Component<any,any> {
 
     }
 
+
+
     componentDidMount() {
 
         window.addEventListener('keydown', (e)=> {
@@ -29,7 +32,7 @@ class Subface extends React.Component<any,any> {
             }else if(e.key == 'ArrowRight'){
                 this.move('right');
             }else if (e.key == 'ArrowDown'){
-
+                this.autoSquareFalling()
             }else if (e.key == ' '){
                 this.move(' ');
             }
@@ -38,27 +41,93 @@ class Subface extends React.Component<any,any> {
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 300);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
 
     }
 
-    componentWillUnmount() {
-        clearInterval(this.timePromise);
+    changeSquare(){
+        // 判断周围有足够(3*3)空间进行互换 I型足够(4*4)空间
     }
+
+
 
     autoSquareFalling (){
         this.state.graphicalModel.subface = new GraphicalModels().subface;
         this.state.squareItem.top += 1;
-        console.log(this.state.squareItem.top);
-        if (this.state.squareItem.top>18){
+        // 边界处理 接触到底边或堆积最高行
+        if (this.state.squareItem.top > (new GraphicalModels().subface.length - this.state.squareItem.square.length)){
             window.clearInterval(this.timePromise);
+            // subface 修改数据
+            {this.saveToSubfaceMap()}
+            // 清空graphicalModel 创建新的方块
+            {this.resetAndNewSquare()}
+
+
         }else {
             this.initOneSquare();
         }
-
     }
 
-    // 初始化一个方块
+    // 方块下落结束后更新显示subfaceMap
+    saveToSubfaceMap(){
+
+        let saveIndex :any = [];
+        for (let i = 0 ; i < this.state.squareItem.square.length ; i++){
+            for (let j = 0;j < this.state.squareItem.square[i].length;j++){
+
+                if (this.state.squareItem.square[i][j] == 1){
+                    // 移动到最左最右情况下 处理越界
+                    // if (this.state.squareItem.left == 0 || this.state.squareItem.left == (this.state.subfaceModel.subface[0].length -  this.state.squareItem.square[i].length)){
+                    //     saveIndex.push(
+                    //         [i + (this.state.squareItem.top - 1), j + this.state.squareItem.left]
+                    //     )
+                    // }else {
+                    //     saveIndex.push(
+                    //         [i + (this.state.squareItem.top - 1), j + (this.state.squareItem.left-1)]
+                    //     )
+                    // }
+                    saveIndex.push(
+                        [i + (this.state.squareItem.top - 1), j + (this.state.squareItem.left)]
+                    )
+                }
+            }
+        }
+        for (let k = 0 ; k < saveIndex.length;k++){
+            this.state.subfaceModel.subface[saveIndex[k][0]][saveIndex[k][1]][0] = 1;
+            this.state.subfaceModel.subface[saveIndex[k][0]][saveIndex[k][1]][1] = this.state.squareItem.color;
+        }
+        this.setState({
+            subfaceModel:this.state.subfaceModel
+        })
+    }
+
+    resetAndNewSquare(){
+        let newGraphicalModel = new GraphicalModels();
+        let newSquareItem = createSquare();
+        this.state.graphicalModel.subface = newGraphicalModel.subface;
+        this.state.squareItem.square = newSquareItem.square;
+        this.state.squareItem.top    = newSquareItem.top;
+        this.state.squareItem.left   = newSquareItem.left;
+        this.state.squareItem.color  = newSquareItem.color;
+        this.state.squareItem.type   = newSquareItem.type;
+        this.initOneSquare();
+        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+    }
+
+
+    move(type:string){
+        this.state.graphicalModel.subface = new GraphicalModels().subface;
+        if (type === 'left'){
+            this.state.squareItem.left -= 1;
+        }else if(type === 'right'){
+            this.state.squareItem.left += 1;
+        }else if(type === ' '){
+
+        }
+        this.initOneSquare();
+    }
+
+    // 初始化一个方块 + 移动操作
     initOneSquare(){
         for (let j = 0 ; j < this.state.squareItem.square.length ; j++){
             for (let k = 0 ; k < this.state.squareItem.square[j].length ; k++){
@@ -75,20 +144,7 @@ class Subface extends React.Component<any,any> {
 
     }
     
-    move(type:string){
-        this.state.graphicalModel.subface = new GraphicalModels().subface;
-        if (type === 'left'){
-            this.state.squareItem.left -= 1;
-        }else if(type === 'right'){
-            this.state.squareItem.left += 1;
-        }else if(type === ' '){
 
-        }
-        console.log(this.state.squareItem.left);
-        console.log(this.state.squareItem);
-
-        this.initOneSquare();
-    }
 
     createSubfaceMap(): any {
         let data: any = this.state.subfaceModel.subface;
@@ -144,6 +200,10 @@ class Subface extends React.Component<any,any> {
                 {this.createGraphicalMap()}
             </div>
         )
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timePromise);
     }
 }
 

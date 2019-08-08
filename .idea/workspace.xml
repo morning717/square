@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40b44f0a-492a-4e8a-beda-c25991f5a9ab" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/graphicalModels.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/graphicalModels.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/component/subface.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/subface.tsx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +36,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="settings.editor.selected.configurable" value="preferences.general" />
-    <property name="ts.external.directory.path" value="D:\workspace\WebStorm 2019.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -63,7 +64,7 @@
       <workItem from="1564820621510" duration="6965000" />
       <workItem from="1565146502698" duration="14223000" />
       <workItem from="1565186612727" duration="7539000" />
-      <workItem from="1565232210113" duration="411000" />
+      <workItem from="1565232210113" duration="9844000" />
     </task>
     <servers />
   </component>
