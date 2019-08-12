@@ -1,7 +1,7 @@
 import React from 'react';
 import './subfaceStyle.less'
 import GraphicalModels from "./graphicalModels";
-import {createSquare} from "./squareType";
+import {createSquare ,transformL ,transformUL , transformT} from "./squareType";
 
 
 class Subface extends React.Component<any,any> {
@@ -17,12 +17,12 @@ class Subface extends React.Component<any,any> {
         this.state = {
             graphicalModel : new GraphicalModels(),
             subfaceModel   : new GraphicalModels(),
-            squareItem     : createSquare()
+            squareItem     : createSquare(),
+            tIndex         : {type:'',index:-1},
         }
 
+
     }
-
-
 
     componentDidMount() {
         window.addEventListener('keydown', (e)=> {
@@ -33,6 +33,12 @@ class Subface extends React.Component<any,any> {
             }else if (e.key == 'ArrowDown'){
                 this.autoSquareFalling()
             }else if (e.key == 'ArrowUp'){
+                if (this.state.tIndex.index >= 3){
+                    this.state.tIndex.index = 0;
+                }else {
+                    this.state.tIndex.index += 1;
+                }
+
                 this.changeSquare();
             }
         });
@@ -40,6 +46,7 @@ class Subface extends React.Component<any,any> {
     }
 
     changeSquare(){
+        console.log(this.state.tIndex.index)
         // 1清空画布 -> 2处理旋转 -> 3initNewSquare
         /*1*/
         let newGraphicalModel = new GraphicalModels();
@@ -57,7 +64,8 @@ class Subface extends React.Component<any,any> {
                     trI[j][i] = squareItem.square[i][j];
                 }
             }
-            this.state.squareItem.square = trI;
+            this.checkTransformSpace(trI);
+            // this.state.squareItem.square = trI;
         }else if (squareItem.type == "O"){
 
         }else if (squareItem.type == "Z" || squareItem.type == "UZ"){
@@ -70,14 +78,28 @@ class Subface extends React.Component<any,any> {
                     tr[j][i] = squareItem.square[i][j];
                 }
             }
-            this.state.squareItem.square = tr;
+            this.checkTransformSpace(tr);
+            // this.state.squareItem.square = tr;
         }else if (squareItem.type == "L" || squareItem.type == "UL"){
-
+            if (squareItem.type == "L"){
+                this.checkTransformSpace(transformL()[this.state.tIndex.index]);
+                // this.state.squareItem.square = transformL()[this.state.tIndex.index];
+            }else {
+                this.checkTransformSpace(transformUL()[this.state.tIndex.index]);
+                // this.state.squareItem.square = transformUL()[this.state.tIndex.index];
+            }
         }else {
-
+            this.checkTransformSpace(transformT()[this.state.tIndex.index]);
+            // this.state.squareItem.square = transformT()[this.state.tIndex.index];
         }
         /*3*/
         this.initOneSquare()
+    }
+
+    checkTransformSpace(p:any){
+        // 空间足够旋转 && 旋转后位置足够
+        console.log(p);
+        // this.state.squareItem.square = p;
     }
 
     start(){
@@ -91,7 +113,32 @@ class Subface extends React.Component<any,any> {
         this.state.graphicalModel.subface = new GraphicalModels().subface;
         this.state.squareItem.top += 1;
         // 边界处理 接触到底边或堆积最高行
-        if (this.state.squareItem.top > (new GraphicalModels().subface.length - this.state.squareItem.square.length)){
+
+        // 获取显示画布当前行数
+        let currentBottomLine:number =  new GraphicalModels().subface.length;
+        for (let i = currentBottomLine-1 ; i >= 0 ; i--){
+            let s:any = [];
+            for (let j = 0;j < this.state.subfaceModel.subface[i].length;j++) {
+                s.push(
+                    this.state.subfaceModel.subface[i][j][0]
+                );
+                if (s.indexOf(1) > -1) {
+                    currentBottomLine = i;
+                } else {
+                    continue;
+                }
+            }
+        }
+
+
+
+        for (let i = 0; i < this.state.squareItem.square[this.state.squareItem.square.length-1].length;i++){
+            console.log(this.state.squareItem.square[this.state.squareItem.square.length-1][i]);
+        }
+
+        console.log(this.state.subfaceModel.subface[this.state.squareItem.top + this.state.squareItem.square.length]);
+
+        if (this.state.squareItem.top > (currentBottomLine - this.state.squareItem.square.length)){
             window.clearInterval(this.timePromise);
             // subface 修改数据
             {this.saveToSubfaceMap()}
@@ -147,19 +194,20 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
     }
 
 
     move(type:string){
         this.state.graphicalModel.subface = new GraphicalModels().subface;
         if (type === 'left'){
+            if (this.state.squareItem.left < 1) return;;
             this.state.squareItem.left -= 1;
         }else if(type === 'right'){
+            if (this.state.squareItem.left > (this.state.graphicalModel.subface[0].length - this.state.squareItem.square[0].length -1)) return;
             this.state.squareItem.left += 1;
-        }else if(type === ' '){
-
         }
+
         this.initOneSquare();
     }
 
