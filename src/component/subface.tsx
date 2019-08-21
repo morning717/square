@@ -101,137 +101,71 @@ class Subface extends React.Component<any,any> {
     checkTransformSpace(p:any){
         // 空间足够旋转 && 旋转后位置足够
         console.log(p);
-        // this.state.squareItem.square = p;
+        this.state.squareItem.square = p;
     }
 
     start(){
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+    }
+
+    checkNextSquareLocation(curSquareItem:any){
+        console.log(curSquareItem);
+        // 触底
+
+        if (curSquareItem.top >= (this.state.subfaceModel.subface.length - curSquareItem.square.length)) return 1;
+
+        // 获取当前快下一步位置的横纵坐标
+        let curSquareXY:any = [];
+        for (let i = 0; i < curSquareItem.square.length; i++){
+            for (let j = 0; j < curSquareItem.square[i].length ; j++){
+                if (curSquareItem.square[i][j] == 1){
+                    curSquareXY.push(
+                        [curSquareItem.left+j,curSquareItem.top + i + 1]
+                    )
+                }
+            }
+        }
+        console.log(curSquareXY);
+        // 获取当前块下一步位置的subFace上的值
+        let subFacePosition = [];
+        for (let i = 0; i < curSquareXY.length; i++){
+            subFacePosition.push(
+                this.state.subfaceModel.subface[curSquareXY[i][1]][curSquareXY[i][0]][0]
+            )
+        }
+
+        let isDown = subFacePosition.indexOf(1);
+
+
+        console.log(isDown);
+
+        return isDown;
     }
 
     autoSquareFalling (){
         /*清空画布*/
         this.state.graphicalModel.subface = new GraphicalModels().subface;
-        let curSquareItem = this.state.squareItem;
+        // let curSquareItem = this.state.squareItem;
         /*判断是否可以下降*/
-        console.log(curSquareItem.top);
-        // 提取方块位置横纵index
-        let squareXYIndex:any = [];
-        for (let i = 0; i < curSquareItem.square.length; i++){
-            for (let j = 0; j < curSquareItem.square[i].length ; j++){
-                if (curSquareItem.square[i][j] == 1){
-                    squareXYIndex.push(
-                        [curSquareItem.left + j,curSquareItem.top+i]
-                    )
-                }
-            }
+        // console.log(curSquareItem.top);
+        // 提取下一个方块位置信息
+        let isDown =  this.checkNextSquareLocation(this.state.squareItem);
+        // console.table(this.state.squareItem.square);
+        console.log("isDown == " + isDown);
+        this.state.squareItem.top += 1;
+        if (isDown == -1){
+            this.initOneSquare();
+        }else {
+            window.clearInterval(this.timePromise);
+            // subface 修改数据
+            console.log(this.state.squareItem);
+            {this.saveToSubfaceMap()}
+            // 清空graphicalModel 创建新的方块
+            {this.resetAndNewSquare()}
         }
-        console.log(squareXYIndex);
-
-
-        //------------------------------V1-------------------------
-        // this.state.graphicalModel.subface = new GraphicalModels().subface;
-        // this.state.squareItem.top += 1;
-
-        // 边界处理 接触到底边或堆积最高行
-
-        // 获取显示画布当前最高行
-        // let currentBottomLine:number =  new GraphicalModels().subface.length;
-        // for (let i = currentBottomLine-1 ; i >= 0 ; i--){
-        //     let s:any = [];
-        //     for (let j = 0;j < this.state.subfaceModel.subface[i].length;j++) {
-        //         s.push(
-        //             this.state.subfaceModel.subface[i][j][0]
-        //         );
-        //         if (s.indexOf(1) > -1) {
-        //             currentBottomLine = i;
-        //         } else {
-        //             continue;
-        //         }
-        //     }
-        // }
-        //
-        //
-        //
-        // let isDown:boolean  = true;
-        // let isClear:boolean = true;
-        //
-        //
-        //
-        // let check:any = [];
-        // for (let i = 0 ; i < this.state.subfaceModel.subface[this.state.subfaceModel.subface.length - 1].length;i++){
-        //     check.push(
-        //         this.state.subfaceModel.subface[this.state.subfaceModel.subface.length - 1][i][0]
-        //     );
-        // }
-        //
-        // if (check.indexOf(1) > -1){
-        //     isClear = false;
-        // }
-        //
-        // if (isClear){
-        //     this.state.squareItem.top += 1;
-        //     // 画布为空
-        //     if (this.state.squareItem.top > (currentBottomLine - this.state.squareItem.square.length)){
-        //         window.clearInterval(this.timePromise);
-        //         // subface 修改数据
-        //         {this.saveToSubfaceMap()}
-        //         // 清空graphicalModel 创建新的方块
-        //         {this.resetAndNewSquare()}
-        //     }else {
-        //         this.initOneSquare();
-        //     }
-        // }else{
-        //     let curSquareItem = this.state.squareItem;
-        //     console.log('图形下一行index == ' +(curSquareItem.top + curSquareItem.square.length));
-        //     console.log('图形下一行数据   == ' +this.state.subfaceModel.subface[curSquareItem.top + curSquareItem.square.length]);
-        //
-        //     for (let i = 0 ; i < curSquareItem.square[curSquareItem.square.length - 1].length;i++){
-        //         // console.log('图形最后一行index == ' +(curSquareItem.left+i));
-        //         // console.log('图形下一行数据 index 的值 == ' +(this.state.subfaceModel.subface[curSquareItem.top + curSquareItem.square.length][curSquareItem.left+i][0]));
-        //
-        //
-        //         if (curSquareItem.square[curSquareItem.square.length - 1][i] == 1) {
-        //             if (this.state.subfaceModel.subface[curSquareItem.top + curSquareItem.square.length][curSquareItem.left+i][0] == 1){
-        //                 console.log('不能下')
-        //                 isDown =false;
-        //             }
-        //         }
-        //     }
-        // }
-        //
-        // console.log(isDown);
-        //
-        // if (isDown == true){
-        //     this.state.squareItem.top += 1;
-        //     this.initOneSquare();
-        // }else {
-        //     window.clearInterval(this.timePromise);
-        //     // subface 修改数据
-        //     {this.saveToSubfaceMap()}
-        //     // 清空graphicalModel 创建新的方块
-        //     {this.resetAndNewSquare()}
-        // }
-
-
-
-
-        // console.log(isDown);
-
-        // if (this.state.squareItem.top > (currentBottomLine - this.state.squareItem.square.length)){
-        // // if (isDown == true){
-        //     window.clearInterval(this.timePromise);
-        //     // subface 修改数据
-        //     {this.saveToSubfaceMap()}
-        //     // 清空graphicalModel 创建新的方块
-        //     {this.resetAndNewSquare()}
-        //
-        //
-        // }else {
-        //     this.initOneSquare();
-        // }
     }
 
     // 方块下落结束后更新显示subfaceMap
