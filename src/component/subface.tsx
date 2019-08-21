@@ -108,15 +108,12 @@ class Subface extends React.Component<any,any> {
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
     }
 
     checkNextSquareLocation(curSquareItem:any){
-        console.log(curSquareItem);
         // 触底
-
         if (curSquareItem.top >= (this.state.subfaceModel.subface.length - curSquareItem.square.length)) return 1;
-
         // 获取当前快下一步位置的横纵坐标
         let curSquareXY:any = [];
         for (let i = 0; i < curSquareItem.square.length; i++){
@@ -128,7 +125,6 @@ class Subface extends React.Component<any,any> {
                 }
             }
         }
-        console.log(curSquareXY);
         // 获取当前块下一步位置的subFace上的值
         let subFacePosition = [];
         for (let i = 0; i < curSquareXY.length; i++){
@@ -136,12 +132,7 @@ class Subface extends React.Component<any,any> {
                 this.state.subfaceModel.subface[curSquareXY[i][1]][curSquareXY[i][0]][0]
             )
         }
-
         let isDown = subFacePosition.indexOf(1);
-
-
-        console.log(isDown);
-
         return isDown;
     }
 
@@ -150,11 +141,8 @@ class Subface extends React.Component<any,any> {
         this.state.graphicalModel.subface = new GraphicalModels().subface;
         // let curSquareItem = this.state.squareItem;
         /*判断是否可以下降*/
-        // console.log(curSquareItem.top);
         // 提取下一个方块位置信息
         let isDown =  this.checkNextSquareLocation(this.state.squareItem);
-        // console.table(this.state.squareItem.square);
-        console.log("isDown == " + isDown);
         this.state.squareItem.top += 1;
         if (isDown == -1){
             this.initOneSquare();
@@ -211,7 +199,7 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
     }
 
 
