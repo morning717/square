@@ -18,7 +18,8 @@ class Subface extends React.Component<any,any> {
             graphicalModel : new GraphicalModels(),
             subfaceModel   : new GraphicalModels(),
             squareItem     : createSquare(),
-            tIndex         : {type:'',index:-1},
+            tIndex         : {type:'',index:-1}, // transform index
+            tLock          : {cState:false}, // transform lock
         }
 
 
@@ -48,7 +49,8 @@ class Subface extends React.Component<any,any> {
 
 
     changeSquare(){
-        console.log(this.state.tIndex.index)
+        console.log(this.state.tLock);
+        if (this.state.tLock.cState == true) return;
         // 1清空画布 -> 2处理旋转 -> 3initNewSquare
         /*1*/
         let newGraphicalModel = new GraphicalModels();
@@ -94,21 +96,53 @@ class Subface extends React.Component<any,any> {
             this.checkTransformSpace(transformT()[this.state.tIndex.index]);
             // this.state.squareItem.square = transformT()[this.state.tIndex.index];
         }
-        /*3*/
-        this.initOneSquare()
+        /*3  checkTransformSpace */
+        // this.initOneSquare()
+
     }
 
     checkTransformSpace(p:any){
-        // 空间足够旋转 && 旋转后位置足够
-        console.log(p);
-        this.state.squareItem.square = p;
+        // 空间足够旋转(非硬性) && 旋转后位置足够
+        if ((this.state.subfaceModel.subface.length - p.length) <  this.state.squareItem.top){
+            this.state.tLock.cState = true;
+            return;
+        }
+        // 获取当前快旋转后位置的横纵坐标
+        let curSquareXY:any = [];
+        for (let i = 0; i < p.length; i++){
+            for (let j = 0; j < p[i].length ; j++){
+                if (p[i][j] == 1){
+                    curSquareXY.push(
+                        [this.state.squareItem.left+j,this.state.squareItem.top + i]
+                    )
+                }
+            }
+        }
+        // 获取当前块下一步位置的subFace上的值
+        let subFacePosition = [];
+        for (let i = 0; i < curSquareXY.length; i++){
+            subFacePosition.push(
+                this.state.subfaceModel.subface[curSquareXY[i][1]][curSquareXY[i][0]][0]
+            )
+        }
+        // isTransform==true 不能旋转
+        let isTransform:boolean = subFacePosition.includes(1);
+        console.log(isTransform);
+        if (!isTransform){
+            this.state.squareItem.square = p;
+            /*3*/
+            this.initOneSquare()
+        }else {
+            // 出现一次不能旋转后 锁定旋转操作 左右操作或新生成块是解锁
+            this.state.tLock.cState = true;
+        }
     }
 
     start(){
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
     }
 
     checkNextSquareLocation(curSquareItem:any){
@@ -199,11 +233,12 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
     }
 
 
     move(type:string){
+        this.state.tLock.cState = true;
         this.state.graphicalModel.subface = new GraphicalModels().subface;
         if (type === 'left'){
             if (this.state.squareItem.left < 1) return;;
@@ -214,6 +249,10 @@ class Subface extends React.Component<any,any> {
         }
 
         this.initOneSquare();
+    }
+
+    checkAroundSquareLocation(){
+
     }
 
     // 初始化一个方块 + 移动操作
@@ -228,6 +267,7 @@ class Subface extends React.Component<any,any> {
         }
 
         this.setState({
+            tLock : {cState:false},
             graphicalModel:this.state.graphicalModel
         })
 
