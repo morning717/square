@@ -102,8 +102,9 @@ class Subface extends React.Component<any,any> {
     }
 
     checkTransformSpace(p:any){
-        // 空间足够旋转(非硬性) && 旋转后位置足够
-        if ((this.state.subfaceModel.subface.length - p.length) <  this.state.squareItem.top){
+        // 空间足够旋转(非硬性) && 旋转后位置足够 (this.state.subfaceModel.subface[0].length - p[0].length) < this.state.squareItem.left(此判断不严谨 需处理)
+        if ((this.state.subfaceModel.subface.length - p.length) <  this.state.squareItem.top ||
+            (this.state.subfaceModel.subface[0].length - p[0].length) < this.state.squareItem.left){
             this.state.tLock.cState = true;
             return;
         }
@@ -241,18 +242,45 @@ class Subface extends React.Component<any,any> {
         this.state.tLock.cState = true;
         this.state.graphicalModel.subface = new GraphicalModels().subface;
         if (type === 'left'){
-            if (this.state.squareItem.left < 1) return;;
-            this.state.squareItem.left -= 1;
+            if (this.state.squareItem.left < 1) return;
+            if(!this.checkAroundSquareLocation('left')) {
+                this.state.squareItem.left -= 1;
+            }
+
         }else if(type === 'right'){
             if (this.state.squareItem.left > (this.state.graphicalModel.subface[0].length - this.state.squareItem.square[0].length -1)) return;
-            this.state.squareItem.left += 1;
+            if(!this.checkAroundSquareLocation('right')) {
+                this.state.squareItem.left += 1;
+            }
         }
 
         this.initOneSquare();
     }
 
-    checkAroundSquareLocation(){
-
+    checkAroundSquareLocation(type:string){
+        console.log(this.state.squareItem);
+        // 获取当前快左右移动后位置的横纵坐标
+        let curSquareXY:any = [];
+        for (let i = 0; i < this.state.squareItem.square.length; i++){
+            for (let j = 0; j < this.state.squareItem.square[i].length ; j++){
+                if (this.state.squareItem.square[i][j] == 1){
+                    curSquareXY.push(
+                        [this.state.squareItem.left+j + (type === 'left' ? -1 : 1),this.state.squareItem.top + i]
+                    )
+                }
+            }
+        }
+        // 获取当前块下一步位置的subFace上的值
+        let subFacePosition = [];
+        for (let i = 0; i < curSquareXY.length; i++){
+            subFacePosition.push(
+                this.state.subfaceModel.subface[curSquareXY[i][1]][curSquareXY[i][0]][0]
+            )
+        }
+        // isMove==true 不能移动
+        let isMove:boolean = subFacePosition.includes(1);
+        // console.log(isMove);
+        return isMove;
     }
 
     // 初始化一个方块 + 移动操作
