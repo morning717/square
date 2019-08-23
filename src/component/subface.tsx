@@ -143,7 +143,7 @@ class Subface extends React.Component<any,any> {
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 500);
     }
 
     checkNextSquareLocation(curSquareItem:any){
@@ -184,7 +184,7 @@ class Subface extends React.Component<any,any> {
         }else {
             window.clearInterval(this.timePromise);
             // subface 修改数据
-            console.log(this.state.squareItem);
+            // console.log(this.state.squareItem);
             {this.saveToSubfaceMap()}
             // 清空graphicalModel 创建新的方块
             {this.resetAndNewSquare()}
@@ -215,10 +215,32 @@ class Subface extends React.Component<any,any> {
                 }
             }
         }
+
+        console.log(saveIndex);
+
         for (let k = 0 ; k < saveIndex.length;k++){
             this.state.subfaceModel.subface[saveIndex[k][0]][saveIndex[k][1]][0] = 1;
             this.state.subfaceModel.subface[saveIndex[k][0]][saveIndex[k][1]][1] = this.state.squareItem.color;
         }
+
+        // 找出满足消除的行
+        let allSubFaceValue:any = [];
+        for (let i = 0; i < this.state.subfaceModel.subface.length; i++){
+            let columnValue :any = [];
+            for(let j = 0 ; j < this.state.subfaceModel.subface[0].length ; j++){
+                columnValue.push(this.state.subfaceModel.subface[i][j][0]);
+            }
+            if (!columnValue.includes(0)){
+                allSubFaceValue.push(i)
+            }
+        }
+
+        // 删除行 添加新行
+        for (let i = 0; i < allSubFaceValue.length ; i++) {
+            this.state.subfaceModel.subface.splice(allSubFaceValue[i], 1);
+            this.state.subfaceModel.subface.unshift(new GraphicalModels().subface[0]);
+        }
+
         this.setState({
             subfaceModel:this.state.subfaceModel
         })
@@ -234,7 +256,7 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        // this.timePromise = setInterval(() => this.autoSquareFalling(), 1000);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 500);
     }
 
 
@@ -258,7 +280,7 @@ class Subface extends React.Component<any,any> {
     }
 
     checkAroundSquareLocation(type:string){
-        console.log(this.state.squareItem);
+        // console.log(this.state.squareItem);
         // 获取当前快左右移动后位置的横纵坐标
         let curSquareXY:any = [];
         for (let i = 0; i < this.state.squareItem.square.length; i++){
@@ -312,14 +334,14 @@ class Subface extends React.Component<any,any> {
             let sideL: number = 30;
             let color: string = data[col][row][1];
             rs.push(
-                <div key={'subface' + i} style={{
+                <div key={'subFace' + i} style={{
                     position: 'absolute',
                     top: sideL * col,
                     left: sideL * row,
                     width: sideL,
                     height: sideL,
                     backgroundColor:color,
-                    border: 'black solid thin'
+                    border:data[col][row][0] == 1 ? 'black solid thin' : ''
                 }}></div>
             )
         }
@@ -335,7 +357,7 @@ class Subface extends React.Component<any,any> {
             let sideL: number = 30;
             let color: string = data[col][row][1];
             rs.push(
-                <div key={'subface' + i} style={{
+                <div key={'graphicalModel' + i} style={{
                     position: 'absolute',
                     top: sideL * col,
                     left: sideL * row,
