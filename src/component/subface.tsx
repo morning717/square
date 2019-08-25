@@ -20,6 +20,7 @@ class Subface extends React.Component<any,any> {
             squareItem     : createSquare(),
             tIndex         : {type:'',index:-1}, // transform index
             tLock          : {cState:false}, // transform lock
+            point          : {curPoint:0}
         }
 
 
@@ -143,7 +144,7 @@ class Subface extends React.Component<any,any> {
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 500);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 200);
     }
 
     checkNextSquareLocation(curSquareItem:any){
@@ -239,6 +240,7 @@ class Subface extends React.Component<any,any> {
         for (let i = 0; i < allSubFaceValue.length ; i++) {
             this.state.subfaceModel.subface.splice(allSubFaceValue[i], 1);
             this.state.subfaceModel.subface.unshift(new GraphicalModels().subface[0]);
+            this.state.point.curPoint +=100;
         }
 
         this.setState({
@@ -256,7 +258,7 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 500);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), 300);
     }
 
 
@@ -341,7 +343,7 @@ class Subface extends React.Component<any,any> {
                     width: sideL,
                     height: sideL,
                     backgroundColor:color,
-                    border:data[col][row][0] == 1 ? 'black solid thin' : ''
+                    border:data[col][row][0] == 1 ? 'black solid thin' : 'black solid thin'
                 }}></div>
             )
         }
@@ -375,10 +377,23 @@ class Subface extends React.Component<any,any> {
     render() {
         return (
             <div>
+                {this.getPoint()}
                 {this.createSubfaceMap()}
                 {this.createGraphicalMap()}
             </div>
         )
+    }
+
+    getPoint(){
+        console.log(this.state.point.curPoint)
+        return <div style={{
+            position:'absolute',
+            top:500,
+            left:500,
+            width:100,
+            height:40,
+            backgroundColor:'white'
+        }}>{this.state.point.curPoint}</div>
     }
 
     componentWillUnmount() {
