@@ -20,7 +20,8 @@ class Subface extends React.Component<any,any> {
             squareItem     : createSquare(),
             tIndex         : {type:'',index:-1}, // transform index
             tLock          : {cState:false}, // transform lock
-            point          : {curPoint:0}
+            point          : {curPoint:0},
+            timeInterval   : {interval:300}
         }
 
 
@@ -40,8 +41,10 @@ class Subface extends React.Component<any,any> {
                 }else {
                     this.state.tIndex.index += 1;
                 }
-
                 this.changeSquare();
+            }else if(e.key == ' '){
+                window.clearInterval(this.timePromise);
+                this.timePromise = setInterval(() => this.autoSquareFalling(), 1);
             }
         });
         this.start();
@@ -50,7 +53,7 @@ class Subface extends React.Component<any,any> {
 
 
     changeSquare(){
-        console.log(this.state.tLock);
+        // console.log(this.state.tLock);
         if (this.state.tLock.cState == true) return;
         // 1清空画布 -> 2处理旋转 -> 3initNewSquare
         /*1*/
@@ -129,7 +132,7 @@ class Subface extends React.Component<any,any> {
         }
         // isTransform==true 不能旋转
         let isTransform:boolean = subFacePosition.includes(1);
-        console.log(isTransform);
+        // console.log(isTransform);
         if (!isTransform){
             this.state.squareItem.square = p;
             /*3*/
@@ -144,7 +147,7 @@ class Subface extends React.Component<any,any> {
         //初始化一个方块
         this.initOneSquare();
         //启动下落
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 200);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), this.state.timeInterval.interval);
     }
 
     checkNextSquareLocation(curSquareItem:any){
@@ -217,7 +220,7 @@ class Subface extends React.Component<any,any> {
             }
         }
 
-        console.log(saveIndex);
+        // console.log(saveIndex);
 
         for (let k = 0 ; k < saveIndex.length;k++){
             this.state.subfaceModel.subface[saveIndex[k][0]][saveIndex[k][1]][0] = 1;
@@ -258,7 +261,7 @@ class Subface extends React.Component<any,any> {
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
         this.initOneSquare();
-        this.timePromise = setInterval(() => this.autoSquareFalling(), 300);
+        this.timePromise = setInterval(() => this.autoSquareFalling(), this.state.timeInterval.interval);
     }
 
 
@@ -385,15 +388,10 @@ class Subface extends React.Component<any,any> {
     }
 
     getPoint(){
-        console.log(this.state.point.curPoint)
-        return <div style={{
-            position:'absolute',
-            top:500,
-            left:500,
-            width:100,
-            height:40,
-            backgroundColor:'white'
-        }}>{this.state.point.curPoint}</div>
+        if (this.state.point.curPoint >= 100){
+            this.state.timeInterval.interval = 150;
+        }
+        return <div className='point'>{this.state.point.curPoint}</div>
     }
 
     componentWillUnmount() {
