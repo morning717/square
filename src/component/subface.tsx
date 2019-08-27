@@ -1,6 +1,6 @@
 import React from 'react';
 import './subfaceStyle.less'
-import GraphicalModels from "./graphicalModels";
+import GraphicalModels  from "./graphicalModels";
 import {createSquare ,transformL ,transformUL , transformT} from "./squareType";
 
 
@@ -21,7 +21,8 @@ class Subface extends React.Component<any,any> {
             tIndex         : {type:'',index:-1}, // transform index
             tLock          : {cState:false}, // transform lock
             point          : {curPoint:0},
-            timeInterval   : {interval:300}
+            timeInterval   : {interval:1000},
+            nextSquareItem : {nextSquare:createSquare()},
         }
 
 
@@ -253,15 +254,20 @@ class Subface extends React.Component<any,any> {
 
     resetAndNewSquare(){
         let newGraphicalModel = new GraphicalModels();
-        let newSquareItem = createSquare();
+        // let newSquareItem = createSquare();
+        //1 将下一个块 赋予当前块
+        let newSquareItem = this.state.nextSquareItem.nextSquare;
         this.state.graphicalModel.subface = newGraphicalModel.subface;
         this.state.squareItem.square = newSquareItem.square;
         this.state.squareItem.top    = newSquareItem.top;
         this.state.squareItem.left   = newSquareItem.left;
         this.state.squareItem.color  = newSquareItem.color;
         this.state.squareItem.type   = newSquareItem.type;
+        //2 获取下一个块
+        this.state.nextSquareItem.nextSquare = createSquare();
         this.initOneSquare();
         this.timePromise = setInterval(() => this.autoSquareFalling(), this.state.timeInterval.interval);
+
     }
 
 
@@ -380,6 +386,7 @@ class Subface extends React.Component<any,any> {
     render() {
         return (
             <div>
+                {this.nextSquareShow()}
                 {this.getPoint()}
                 {this.createSubfaceMap()}
                 {this.createGraphicalMap()}
@@ -387,10 +394,58 @@ class Subface extends React.Component<any,any> {
         )
     }
 
-    getPoint(){
-        if (this.state.point.curPoint >= 100){
-            this.state.timeInterval.interval = 150;
+    nextSquareShow(){
+        let data: any = [];
+        for (let i = 0; i < 6; i++) {
+            data.push([]);
+            for (let j = 0; j < 6; j++) {
+                data[i].push([0,'white'])
+            }
         }
+
+        let nextSquare = this.state.nextSquareItem.nextSquare.square;
+
+        for (let j = 0; j < nextSquare.length; j++){
+            for (let k = 0 ; k < nextSquare[0].length ; k++){
+                if (nextSquare[j][k] == 1){
+                    data[j+2][k+1][0] = 1;
+                    data[j+2][k+1][1] = this.state.nextSquareItem.nextSquare.color
+                }
+            }
+        }
+
+
+        let rs: Array<object> = [];
+
+        for (let i = 0; i < data.length * data[0].length; i++) {
+            let col: number = parseInt((i / data[0].length).toString());
+            let row: number = parseInt((i % data[0].length).toString());
+            let sideL: number = 30;
+            let color: string = data[col][row][1];
+            rs.push(
+                <div key={'graphicalModel' + i} style={{
+                    position: 'absolute',
+                    top: sideL * col,
+                    left: 450 + sideL * row,
+                    width: sideL,
+                    height: sideL,
+                    backgroundColor:color,
+                    border: 'black solid thin',
+                    opacity:data[col][row][0] == 1 ? 1: 0
+                }}></div>
+            )
+        }
+        return rs;
+
+    }
+
+    getPoint(){
+        //
+        // if (this.state.point.curPoint >= 100){
+        //     this.state.timeInterval.interval = 300;
+        // }
+        this.state.timeInterval.interval = (this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100)) < 300 ? 300:(this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100));
+        console.log(this.state.timeInterval.interval)
         return <div className='point'>{this.state.point.curPoint}</div>
     }
 
