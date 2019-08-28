@@ -57,6 +57,8 @@
     "semver": "6.0.0",
     "style-loader": "0.23.1",
     "terser-webpack-plugin": "1.2.3",
+    "three": "^0.107.0",
+    "three-orbitcontrols": "^2.102.2",
     "ts-pnp": "1.1.2",
     "typescript": "3.5.3",
     "url-loader": "1.1.2",
