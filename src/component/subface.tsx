@@ -441,13 +441,18 @@ class Subface extends React.Component<any,any> {
 
     getPoint(){
         // 处理分数达到一定值 底部随机添加一行
-        //
-        // if (this.state.point.curPoint >= 100){
-        //     this.state.timeInterval.interval = 300;
-        // }
+        if (this.state.point.curPoint >= 100){
+            this.randomRow();
+        }
         this.state.timeInterval.interval = (this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100)) < 300 ? 300:(this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100));
         console.log(this.state.timeInterval.interval)
         return <div className='point'>{this.state.point.curPoint}</div>
+    }
+
+    randomRow(){
+        this.state.subfaceModel.subface.splice(0,1);
+
+        this.state.subfaceModel.subface.unshift();
     }
 
     componentWillUnmount() {
