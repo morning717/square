@@ -450,6 +450,7 @@ class Subface extends React.Component<any,any> {
     }
 
     randomRow(){
+        // 逻辑待处理
         this.state.subfaceModel.subface.splice(0,1);
 
         this.state.subfaceModel.subface.unshift();
