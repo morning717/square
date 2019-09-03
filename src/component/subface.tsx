@@ -450,7 +450,7 @@ class Subface extends React.Component<any,any> {
     }
 
     randomRow(){
-        // 逻辑待处理
+        // 逻辑待处理 增加bool控制是否在1000分段内增加过 当前分数%1000
         this.state.subfaceModel.subface.splice(0,1);
 
         this.state.subfaceModel.subface.unshift();
