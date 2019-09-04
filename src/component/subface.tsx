@@ -444,6 +444,7 @@ class Subface extends React.Component<any,any> {
         if (this.state.point.curPoint >= 100){
             this.randomRow();
         }
+        // 下落速度待优化处理 (新方案)
         this.state.timeInterval.interval = (this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100)) < 300 ? 300:(this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100));
         console.log(this.state.timeInterval.interval)
         return <div className='point'>{this.state.point.curPoint}</div>
