@@ -442,7 +442,7 @@ class Subface extends React.Component<any,any> {
     getPoint(){
         // 处理分数达到一定值 底部随机添加一行
         if (this.state.point.curPoint >= 100){
-            // this.randomRow();
+            this.randomRow();
         }
         // 下落速度待优化处理 (新方案)
         this.state.timeInterval.interval = (this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100)) < 300 ? 300:(this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100));
@@ -452,9 +452,11 @@ class Subface extends React.Component<any,any> {
 
     randomRow(){
         // 逻辑待处理 增加bool控制是否在1000分段内增加过 当前分数%1000
-        this.state.subfaceModel.subface.splice(0,1);
 
-        this.state.subfaceModel.subface.unshift();
+        // 方法异常问题
+        // this.state.subfaceModel.subface.splice(0,1);
+        //
+        // this.state.subfaceModel.subface.unshift();
     }
 
     componentWillUnmount() {
