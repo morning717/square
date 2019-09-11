@@ -28,6 +28,12 @@ class Dotcon extends Component {
                 anchors:["Right", "Left"],
                 endpoint:[ "Rectangle", { width:10, height:8 } ]
             });
+            jsPlumb.draggable("window1", {
+                // grid:[50,50]
+            });
+            jsPlumb.draggable("window2", {
+                // grid:[50,50]
+            });
             jsPlumb.draggable("window3", {
                 // grid:[50,50]
             });
