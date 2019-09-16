@@ -8,8 +8,8 @@ const App: React.FC = () => {
   return (
     <div className="App">
         {/*<ThreeMap/>*/}
-        <PlumbTest/>
-        {/*<Subface/>*/}
+        {/*<PlumbTest/>*/}
+        <Subface/>
     </div>
   );
 };

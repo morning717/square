@@ -318,6 +318,7 @@ class Subface extends React.Component<any,any> {
 
     // 初始化一个方块 + 移动操作
     initOneSquare(){
+        console.log()
         for (let j = 0 ; j < this.state.squareItem.square.length ; j++){
             for (let k = 0 ; k < this.state.squareItem.square[j].length ; k++){
                 if (this.state.squareItem.square[j][k] == 1){
@@ -442,7 +443,7 @@ class Subface extends React.Component<any,any> {
     getPoint(){
         // 处理分数达到一定值 底部随机添加一行
         if (this.state.point.curPoint >= 100){
-            this.randomRow();
+            // this.randomRow();
         }
         // 下落速度待优化处理 (新方案)
         this.state.timeInterval.interval = (this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100)) < 300 ? 300:(this.state.timeInterval.interval * (1 - this.state.point.curPoint / 1000 /100));
