@@ -10,7 +10,7 @@ const App: React.FC = () => {
     <div className="App">
         {/*<ThreeMap/>*/}
         <PlumbTest/>
-        <Subface/>
+        {/*<Subface/>*/}
     </div>
   );
 };
