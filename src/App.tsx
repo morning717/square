@@ -8,6 +8,7 @@ const App: React.FC = () => {
     //入口切换
   return (
     <div className="App">
+         {/*OpenGL ES*/}
         {/*<ThreeMap/>*/}
         <PlumbTest/>
         {/*<Subface/>*/}
