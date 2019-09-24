@@ -453,7 +453,7 @@ class Subface extends React.Component<any,any> {
 
     randomRow(){
         // 逻辑待处理 增加bool控制是否在1000分段内增加过 当前分数%1000
-        // todo 双人
+        // todo 双人 随机出现行 不在最低行 双人同步块
         // 方法异常问题
         // this.state.subfaceModel.subface.splice(0,1);
         //
