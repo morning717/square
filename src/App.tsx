@@ -9,8 +9,8 @@ const App: React.FC = () => {
   return (
     <div className="App">
          {/*OpenGL ES*/}
-        {/*<ThreeMap/>*/}
-        {/*<PlumbTest/>*/}
+        <ThreeMap/>
+        <PlumbTest/>
         <Subface/>
     </div>
   );
