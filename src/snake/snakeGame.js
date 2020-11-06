@@ -28,11 +28,12 @@ export default class SnakeGame extends React.Component{
             },
             foodIsEat:false,
             lastDirection:"left",
+            lastBody:null,
             gameRunning:false,
             gameOver:false,
             gamePoint:0,
             // 移动速度控制
-            timeInterval   : {interval:100},
+            timeInterval   : {interval:150},
         }
     }
 
@@ -58,6 +59,14 @@ export default class SnakeGame extends React.Component{
             clearInterval(this.timePromise)
             this.state.gameRunning = false
         }else {
+            if (this.state.gameOver){
+                this.state.snakeInfo.body = [
+                    {x:boardWh[0]/snakeItemWh[0]/2,y:boardWh[1]/snakeItemWh[1]/2, color:"#fff"},
+                    {x:boardWh[0]/snakeItemWh[0]/2+1,y:boardWh[1]/snakeItemWh[1]/2,color:"#fff"},
+                    {x:boardWh[0]/snakeItemWh[0]/2+2,y:boardWh[1]/snakeItemWh[1]/2,color:"#fff"},
+                ]
+                this.state.snakeInfo.direction = "left"
+            }
             this.start()
         }
     }
@@ -102,7 +111,7 @@ export default class SnakeGame extends React.Component{
         const style = {
             width  : snakeInfo.width  + "px",
             height : snakeInfo.height + "px",
-            background : color,
+            background : index === 0 ? color :'#'+Math.floor(Math.random()*0xffffff).toString(16),
             position   : "absolute",
             top  : y*snakeInfo.height + "px",
             left : x*snakeInfo.width  + "px",
@@ -157,7 +166,7 @@ export default class SnakeGame extends React.Component{
         }
 
         // 边界处理
-        const isCross = this.isCrossBorder(body[0])
+        const isCross = this.isCrossBorder(body)
         // 吃到食物处理
         if (body[0].x === x &&  body[0].y === y){
             this.state.foodIsEat = true
@@ -170,26 +179,19 @@ export default class SnakeGame extends React.Component{
 
         if (!isCross && !isEatSelf){
             this.state.snakeInfo.body = body
-            this.setState({
-                snakeInfo:this.state.snakeInfo,
-                lastDirection:this.state.lastDirection
-            })
         }else {
-            this.state.snakeInfo.body = [
-                {x:boardWh[0]/snakeItemWh[0]/2,y:boardWh[1]/snakeItemWh[1]/2, color:"#fff"},
-                {x:boardWh[0]/snakeItemWh[0]/2+1,y:boardWh[1]/snakeItemWh[1]/2,color:"#fff"},
-                {x:boardWh[0]/snakeItemWh[0]/2+2,y:boardWh[1]/snakeItemWh[1]/2,color:"#fff"},
-            ]
-            this.state.snakeInfo.direction = "left"
-            this.setState({
-                snakeInfo:this.state.snakeInfo,
-                lastDirection:this.state.lastDirection,
-            })
+            // this.state.snakeInfo.body = this.state.lastBody
         }
+
+        this.setState({
+            snakeInfo:this.state.snakeInfo,
+            lastDirection:this.state.lastDirection,
+        })
+
     }
 
-    isCrossBorder(snakeHeader){
-        if (snakeHeader.x < 0 || snakeHeader.x >= boardWh[0]/snakeItemWh[0] || snakeHeader.y < 0 || snakeHeader.y >= boardWh[1]/snakeItemWh[1]){
+    isCrossBorder(body){
+        if (body[0].x < 0 || body[0].x >= boardWh[0]/snakeItemWh[0] || body[0].y < 0 || body[0].y >= boardWh[1]/snakeItemWh[1]){
             clearInterval(this.timePromise)
             this.state.gameRunning = false
             this.state.gameOver = true
