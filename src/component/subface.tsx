@@ -334,7 +334,7 @@ class Subface extends React.Component<any,any> {
         })
 
     }
-    
+
 
 
     createSubfaceMap(): any {

@@ -17,6 +17,9 @@ class TextExport extends React.Component<any,any>{
             alert(error);
         });
     }
+
+
+
     // https://b.test.leconginfo.com/api/pharmacy/paviliondrug/drugsExport?clinicId=272&pyCodeName=&drugType=&status=&pharmacyId=
     render() {
         return(

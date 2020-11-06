@@ -4,6 +4,7 @@ import Subface from './component/subface'
 import ThreeMap from './component/mapTest'
 import PlumbTest from './component/plumbTest'
 import TextExport from './component/testExport'
+import SnakeGame from "./snake/snakeGame";
 
 const App: React.FC = () => {
     //入口切换
@@ -13,7 +14,8 @@ const App: React.FC = () => {
         {/*<ThreeMap/>*/}
         {/*<PlumbTest/>*/}
         {/*<Subface/>*/}
-      <TextExport/>
+      {/*<TextExport/>*/}
+      <SnakeGame/>
     </div>
   );
 };
